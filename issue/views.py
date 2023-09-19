@@ -59,57 +59,74 @@ class TicketViewSet(ModelViewSet):
     def resolve_ticket_by_l1(self, request, *args, **kwargs):
         instance = self.get_object()
         data = request.data
-        data["resolved_by"] = "L1"
-        data['status_code'] = '200'
-        serializer = TicketSerializer(instance=instance, data=data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        if instance.resolved_by == '':
+            data["resolved_by"] = "L1"
+            data['status_code'] = '200'
+            serializer = TicketSerializer(instance=instance, data=data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+            
     
     @action(detail=True,url_path='forwardtol2')
     def forward_to_l2(self,request,*args,**kwargs):
         instance = self.get_object()
         data = request.data
-        if instance.status_code == '102' and instance.resolved_by == '':
+        if instance.status_code == '100' and instance.resolved_by == '':
+            data['status_code'] = '102'
             data['assigned_to'] = 'L2'
-        serializer = TicketSerializer(instance=instance, data=data, partial = True)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data, status= status.HTTP_201_CREATED)
+            serializer = TicketSerializer(instance=instance, data=data, partial = True)
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+            return Response(serializer.data, status= status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        
     
     @action(detail=True, url_path="solvebyl2")
     def resolve_ticket_by_l2(self, request, *args, **kwargs):
         instance = self.get_object()
         data = request.data
-        data["resolved_by"] = "L2"
-        data['status_code'] = '200'
-        serializer = TicketSerializer(instance=instance, data=data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        if instance.status_code != '200' and instance.resolved_by == '':
+            data["resolved_by"] = "L2"
+            data['status_code'] = '200'
+            serializer = TicketSerializer(instance=instance, data=data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        
     
     @action(detail=True,url_path='forwardtol3')
     def forward_to_l3(self,request,*args,**kwargs):
         instance = self.get_object()
         data = request.data
-        if instance.status_code == '102' and instance.resolved_by == '':
+        if instance.status_code != '200' and instance.resolved_by == '':
             data['assigned_to'] = 'L3'
-        serializer = TicketSerializer(instance=instance, data=data, partial = True)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data, status= status.HTTP_201_CREATED)
+            serializer = TicketSerializer(instance=instance, data=data, partial = True)
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+            return Response(serializer.data, status= status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, url_path="solvebyl3")
     def resolve_ticket_by_l3(self, request, *args, **kwargs):
         instance = self.get_object()
         data = request.data
-        data["resolved_by"] = "L3"
-        data['status_code'] = '200'
-        serializer = TicketSerializer(instance=instance, data=data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
+        if instance.status_code != '200' and instance.resolved_by == '':
+            data["resolved_by"] = "L3"
+            data['status_code'] = '200'
+            serializer = TicketSerializer(instance=instance, data=data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        
    
 
 class CommentViewSet(ModelViewSet):
@@ -132,7 +149,7 @@ class CommentViewSet(ModelViewSet):
         # making the comments available to only authenticated user or the admin
         if self.user.is_superuser or self.user.is_authenticated:
             return Comment.objects.filter(ticket__pk=ticket_pk, issuer__pk=user_pk)
-
+        
         else:
             return None
 
