@@ -1,8 +1,8 @@
+from typing import Any
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from issue.enums import GENDER_CHOICES, STATUS_CHOICES, PRIORITY_CHOICES, GROUP_CHOICES, ROLE_CHOICES, RESOLVED_BY_CHOICES
-
-
+from issue.managers import CustomUserManager
 
 class CustomUser(AbstractUser):
     first_name = models.CharField(max_length=30,null = True, blank = True)
@@ -12,11 +12,17 @@ class CustomUser(AbstractUser):
     address = models.CharField(max_length = 50, null = True, blank = True)
     date_of_birth = models.DateField(null = True, blank = True)
     username = models.CharField(max_length=30, unique = True)
-    role = models.CharField(max_length=11,choices=ROLE_CHOICES,default='Normal User')
+    role = models.CharField(max_length=11,choices=ROLE_CHOICES, default='Normal User')
+
+    group = models.ManyToManyField('Group',related_name='groups')
+
+    objects = CustomUserManager()
 
     def __str__(self):
         return self.username
     
+    
+
 class Ticket(models.Model):
     issuer = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='tickets')
     status_code = models.CharField(max_length=3,choices=STATUS_CHOICES, default=200)
@@ -33,16 +39,20 @@ class Ticket(models.Model):
     def __str__(self):
         return self.ticket_ref
     
-class Epic(models.Model):
-    project_name = models.CharField(max_length=50)
-    project_description = models.TextField()
-    start_date = models.DateField(null=True, blank=True)
-    end_date = models.DateField(null=True, blank=True)
-    owner = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True)
-    tickets = models.ManyToManyField(Ticket, related_name='epics')
+
+
+    
+class Group(models.Model):
+    name = models.CharField(max_length=50)
+    members = models.ManyToManyField('CustomUser', related_name='members')
+
 
     def __str__(self):
         return self.project_name
+    
+
+
+    
     
 class Comment(models.Model):
     ticket = models.ForeignKey(Ticket, on_delete=models.CASCADE, related_name='comments')

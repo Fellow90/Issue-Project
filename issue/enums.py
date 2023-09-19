@@ -16,6 +16,7 @@ ROLE_CHOICES = (
     ('L1 User','L1 User'),
     ('L2 User','L2 User'),
     ('L3 User','L3 User'),
+    ('Admin','Admin'),
 )
 
 PRIORITY_CHOICES = (
