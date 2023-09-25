@@ -4,7 +4,6 @@ GENDER_CHOICES = (
     ('O','Others'),
 )
 
-
 STATUS_CHOICES = (
     ('100', 'PENDING'),
     ('200', 'RESOLVED'),
@@ -24,6 +23,7 @@ PRIORITY_CHOICES = (
     ('Medium', 'Medium'),
     ('Low', 'Low'),
 )
+
 GROUP_CHOICES = (
     ('L1','L1'),
     ('L2','L2'),
@@ -33,4 +33,10 @@ RESOLVED_BY_CHOICES = (
     ('L1','L1'),
     ('L2','L2'),
     ('L3','L3'),
+)
+
+GROUP_NAME_CHOICES = (
+    ('L1 SUPPORT','L1 SUPPORT'),
+    ('L2 SUPPORT','L2 SUPPORT'),
+    ('L3 SUPPORT','L3 SUPPORT'),
 )

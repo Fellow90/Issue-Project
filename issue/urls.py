@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from issue.views import TicketViewSet, CommentViewSet, CustomUserViewSet
+from issue.views import TicketViewSet, CommentViewSet, CustomUserViewSet, GroupViewSet
 app_name = 'issue'
 userrouter = DefaultRouter()
 userrouter.register(r'users',CustomUserViewSet, basename='users')
@@ -11,11 +11,13 @@ ticketrouter.register(r'tickets',TicketViewSet, basename='tickets')
 commentrouter = DefaultRouter()
 commentrouter.register(r'comments',CommentViewSet, basename='comments')
 
+grouprouter = DefaultRouter()
+grouprouter.register(r'groups', GroupViewSet, basename='groups')
+
 
 urlpatterns = [
     path('', include(userrouter.urls)),
-    path('users/<int:user_pk>/', include(ticketrouter.urls)),
-    path('users/<int:user_pk>/tickets/<int:ticket_pk>/',include(commentrouter.urls)),
-    # path('users/<int:user_pk>/tickets/<int:ticket_pk>/comments/', CommentViewSet.as_view({'get': 'list'}), name='comment-list'),
-    # path('users/<int:user_pk>/tickets/<int:ticket_pk>/comments/<int:pk>/', CommentViewSet.as_view({'get': 'retrieve'}), name='comment-detail'),
+    path('', include(ticketrouter.urls)),
+    path('tickets/<int:ticket_pk>/',include(commentrouter.urls)),
+    path('', include(grouprouter.urls)),
 ]
