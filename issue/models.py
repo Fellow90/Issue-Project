@@ -37,7 +37,7 @@ class Ticket(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
     code = models.TextField()
-    image = models.ImageField(upload_to='images/', blank=True, null=True)
+    image = models.ImageField(upload_to='tickets', blank=True, null=True)
 
     def __str__(self):
         return self.ticket_ref

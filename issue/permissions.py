@@ -10,6 +10,8 @@ class AssigneePermission(permissions.BasePermission):
         ticket = obj if obj else None
         if user.is_superuser:
             return True
+        if user.role == 'Normal User':
+            return True
         if ticket:
             assigned_to = ticket.assigned_to
             role1 = AssignedToRoleMappers.get(assigned_to)
