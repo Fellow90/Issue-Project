@@ -69,9 +69,7 @@ class TicketSerializer(ModelSerializer):
     # issuer = serializers.PrimaryKeyRelatedField(queryset= CustomUser.objects.all()) 
     #relates the string representation 
     # issuer = serializers.StringRelatedField(many = False)
-
     # photo_url = serializers.SerializerMethodField()
-
     class Meta:
         model = Ticket
         fields = ['id','issuer_first_name','status_code','priority','company_name','ticket_ref','assigned_to','resolved_by','code','image']
