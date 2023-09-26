@@ -70,6 +70,8 @@ class TicketSerializer(ModelSerializer):
     #relates the string representation 
     # issuer = serializers.StringRelatedField(many = False)
 
+    # photo_url = serializers.SerializerMethodField()
+
     class Meta:
         model = Ticket
         fields = ['id','issuer_first_name','status_code','priority','company_name','ticket_ref','assigned_to','resolved_by','code','image']
@@ -88,6 +90,11 @@ class TicketSerializer(ModelSerializer):
         if request and request.method == 'GET':
             fields['issuer'] = CustomUserSerializer()
         return fields
+    
+    # def get_photo_url(self,ticket):
+    #     request = self.context.get('request')
+    #     photo_url = ticket.image.path
+    #     return request.build_absolute_uri(photo_url)
 
     
 class CommentSerializer(ModelSerializer):

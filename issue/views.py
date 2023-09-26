@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.http import FileResponse
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
@@ -151,7 +152,14 @@ class TicketViewSet(ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response({'msg':'The ticket cant be solved by L3'},status=status.HTTP_400_BAD_REQUEST)
-        
+            
+    @action(detail=True, methods=['GET'], url_path="show_image")
+    def show_image(self, request, pk=None):
+        ticket = get_object_or_404(Ticket, pk=pk)
+        if ticket.image:
+            image_path = ticket.image.path
+            return FileResponse(open(image_path, 'rb'))  
+
 
 class CommentViewSet(ModelViewSet):
     serializer_class = CommentSerializer
